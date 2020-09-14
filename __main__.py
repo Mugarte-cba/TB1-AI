@@ -10,6 +10,12 @@ from kivy.properties import ObjectProperty
 from database import DataBase
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.properties import StringProperty
+
+from kivy import Config
+
+Config.set("graphics", "width", "1080")
+Config.set("graphics", "height", "720")
 
 def invalidLogin():
     pop = Popup(title='Invalid Login',
@@ -54,6 +60,20 @@ class Login(GridLayout):
 class Distance(GridLayout):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
+        self.distancia=""
+
+    distancia=StringProperty()
+    imagen=ObjectProperty(None)
+
+    def btn1_press(self):
+        self.imagen.source='img/grafo1.JPG'
+        self.distancia ="Cercado_de_Lima -> Miraflores -> San_Isidro -> Breña -> Magdalena -> Cercado_de_Lima\nTotal distance: 5006 km"
+
+    def btn2_press(self):
+        self.imagen.source='img/grafo2.JPG'
+        self.distancia = "C -> A -> B -> D -> E -> C\nTotal distance: 804 km"
+
+
     def logOut(self):
         myapp.screen_manager.current='Home'
 
