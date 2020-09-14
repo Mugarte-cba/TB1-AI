@@ -1,0 +1,190 @@
+<Home>:
+    cols:2
+    canvas.before:
+        Color:
+            rgb:93/255,109/255,126/255
+        Rectangle:
+            size:self.size
+            pos:self.pos
+
+<Presentation>:
+    padding:10
+    Image:
+        source:'img/portada.png'
+
+<Login>:
+    name: "login"
+    email: email
+    password: password
+    rows:3
+    GridLayout:
+        cols:1
+        padding:10
+        Image:
+            source:'img/welcome.png'
+    GridLayout:
+        padding:[5,30,5,30]
+        rows:2
+        BoxLayout:
+            padding:20
+            Label:
+                size_hint:0.5,None
+                size_hint_y:1
+                text:'Username'
+            TextInput:
+                id:email
+                multiline:False
+        BoxLayout:
+            padding:20
+            Label:
+                size_hint:0.5,None
+                size_hint_y:1
+                text:'Password'
+            TextInput:
+                id:password
+                multiline:False
+                password:True
+    BoxLayout:
+        padding:[80,10,80,150]
+        Button:
+            text:'Log in'
+            on_release:
+                root.loginBtn()
+
+#Segunda Vista
+<Tittle_up@BoxLayout>:
+    size_hint:1,None
+    size_hint_y:0.2
+    Label:
+        canvas.before:
+            Color:
+                rgb:1,1,1
+            Rectangle:
+                pos:self.pos
+                size:self.size
+        text: "[color=cc6600][b]OLVO COURIER S.A.C[/b][/color]"
+        markup: True
+        font_size:'30sp'
+
+<Custom_bl@GridLayout>:
+    rows:3
+    padding:30
+    BoxLayout:
+        size_hint:1,None
+        size_hint_y:0.6
+        Image:
+            source:'img/courier_car.JPG'
+    BoxLayout:
+        size_hint:1,None
+        size_hint_y:0.6
+        Label:
+            text:'Capacidad de carga(Kg)'
+
+<Custom_btn@Button>:
+    canvas.before:
+        Color:
+            rgb:1,1,1
+        Rectangle:
+            pos:self.pos
+            size:self.size
+    background_color:0.9,0.1,0.1,1
+    color:1,1,1,1
+
+
+<Select_Car>:
+    rows:3
+    Tittle_up:
+    BoxLayout:
+        cols:3
+        canvas.before:
+            Color:
+                rgb:93/255,109/255,126/255
+            Rectangle:
+                pos:self.pos
+                size:self.size
+        Custom_bl:
+            BoxLayout:
+                padding:[30,0,30,150]
+                Custom_btn:
+                    text:'60 Kg'
+        Custom_bl:
+            BoxLayout:
+                padding:[30,0,30,150]
+                Custom_btn:
+                    text:'90 Kg'
+        Custom_bl:
+            BoxLayout:
+                padding:[30,0,30,150]
+                Custom_btn:
+                    text:'150 Kg'
+
+#ViewProducts
+<Menu@BoxLayout>:
+    size_hint: (None,None)
+    size: (270,50)
+    orientation: 'vertical'
+    Spinner:
+        text: "Menu"
+        values: "Falta", "Implementar", "Bai"
+        size_hint: (None,None)
+        size: (270,50)
+<Distance>:
+    canvas.before:
+        Color:
+            rgb:93/255,109/255,126/255
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    rows:5
+    Tittle_up:
+    Menu:
+    GridLayout:
+        cols:2
+        GridLayout:
+            padding:50
+            cols:1
+            Button:
+                text: 'Recorrido 1'
+            Button:
+                text: 'Recorrido 2'
+            Button:
+                text: 'Calcular Recorrido Optimo'
+        GridLayout:
+            cols:1
+            BoxLayout:
+                padding:10
+                Image:
+
+    GridLayout:
+        cols:1
+        rows:2
+        Label:
+            size_hint:(1,None)
+            text:"Recorrido Optimo"
+        GridLayout:
+            cols:1
+            BoxLayout:
+                orientation:'vertical'
+                padding:50
+                TextInput:
+                    id: viewer
+                    readonly: True
+    AnchorLayout:
+        padding:10
+        size_hint:1,None
+        height:50
+        canvas.before:
+            Color:
+                rgb:93/255,109/255,126/255
+            Rectangle:
+                pos:self.pos
+                size:self.size
+        anchor_x:'left'
+        anchor_y:'bottom'
+        Button:
+            text:'Log out'
+            size_hint:0.2,1
+            on_release:
+                root.logOut()
+
+
