@@ -129,6 +129,12 @@
         size_hint: (None,None)
         size: (270,50)
 <Distance>:
+    name: "distance"
+    imagen: imagen
+    btn_recorrido1: btn_recorrido1
+    btn_recorrido2: btn_recorrido2
+#    btn_calcular=root.g
+
     canvas.before:
         Color:
             rgb:93/255,109/255,126/255
@@ -141,34 +147,50 @@
     GridLayout:
         cols:2
         GridLayout:
-            padding:50
+            padding:10
             cols:1
-            Button:
-                text: 'Recorrido 1'
-            Button:
-                text: 'Recorrido 2'
-            Button:
-                text: 'Calcular Recorrido Optimo'
+            size_hint:None,1
+            size_hint_x:0.4
+            BoxLayout:
+                padding:[0,20,0,20]
+                Button:
+                    id: btn_recorrido1
+                    text: 'Recorrido 1'
+                    on_press:
+                        root.btn1_press()
+            BoxLayout:
+                padding:[0,20,0,20]
+                Button:
+                    id: btn_recorrido2
+                    text: 'Recorrido 2'
+                    on_press:
+                        root.btn2_press()
+            BoxLayout:
+                padding:[0,20,0,20]
+
+
         GridLayout:
             cols:1
             BoxLayout:
-                padding:10
                 Image:
+                    id: imagen
 
     GridLayout:
+        size_hint:(1,None)
+        size_hint_y:0.5
         cols:1
         rows:2
         Label:
-            size_hint:(1,None)
             text:"Recorrido Optimo"
         GridLayout:
             cols:1
             BoxLayout:
                 orientation:'vertical'
-                padding:50
+                padding:10
                 TextInput:
                     id: viewer
                     readonly: True
+                    text:root.distancia
     AnchorLayout:
         padding:10
         size_hint:1,None

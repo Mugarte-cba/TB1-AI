@@ -1,208 +1,122 @@
-# Import libraries
+# Importando librerias
 import random
 import copy
 
-# This class represent a state
 class State:
-    # Create a new state
+    # Creando un nuevo estado
     def __init__(self, route: [], distance: int = 0):
         self.route = route
         self.distance = distance
 
-    # Compare states
-    def __eq__(self, other):
-        for i in range(len(self.route)):
-            if (self.route[i] != other.route[i]):
-                return False
-        return True
-
-    # Sort states
-    def __lt__(self, other):
-        return self.distance < other.distance
-
-    # Print a state
-    def __repr__(self):
-        return ('({0},{1})\n'.format(self.route, self.distance))
-
-    # Create a shallow copy
-    def copy(self):
-        return State(self.route, self.distance)
-
-    # Create a deep copy
+    # Creando una copia
     def deepcopy(self):
         return State(copy.deepcopy(self.route), copy.deepcopy(self.distance))
 
-    # Update distance
+    #Actualizando distancia
     def update_distance(self, matrix, home):
 
-        # Reset distance
+        #Reiniciando distancia
         self.distance = 0
-        # Keep track of departing city
+        # Mantenga un registro de salida de la ciudad
         from_index = home
-        # Loop all cities in the current route
+        # Recorre todas las ciudades de la ruta actual
         for i in range(len(self.route)):
             self.distance += matrix[from_index][self.route[i]]
             from_index = self.route[i]
-        # Add the distance back to home
+        #Añadir la distancia de vuelta a home
         self.distance += matrix[from_index][home]
 
-
-# This class represent a city (used when we need to delete cities)
 class City:
-    # Create a new city
+    #Creando una nueva ciudad
     def __init__(self, index: int, distance: int):
         self.index = index
         self.distance = distance
 
-    # Sort cities
+    #Ordenando ciudades
     def __lt__(self, other):
         return self.distance < other.distance
 
 
-# Get the best random solution from a population
-def get_random_solution(matrix: [], home: int, city_indexes: [], size: int, use_weights=False):
-    # Create a list with city indexes
-    cities = city_indexes.copy()
-    # Remove the home city
-    cities.pop(home)
-    # Create a population
-    population = []
-    for i in range(size):
-        if (use_weights == True):
-            state = get_random_solution_with_weights(matrix, home)
-        else:
-            # Shuffle cities at random
-            random.shuffle(cities)
-            # Create a state
-            state = State(cities[:])
-            state.update_distance(matrix, home)
-        # Add an individual to the population
-        population.append(state)
-    # Sort population
-    population.sort()
-    # Return the best solution
-    return population[0]
-
-
-# Get best solution by distance
+#Obtenga la mejor solución por distancia
 def get_best_solution_by_distance(matrix: [], home: int):
     # Variables
     route = []
     from_index = home
     length = len(matrix) - 1
-    # Loop until route is complete
+    # Recorre hasta completar ruta
     while len(route) < length:
-        # Get a matrix row
+        #Obtenner una matriz de fil
         row = matrix[from_index]
-        # Create a list with cities
+        # Creando lista con las ciudades
         cities = {}
         for i in range(len(row)):
             cities[i] = City(i, row[i])
-        # Remove cities that already is assigned to the route
+        # Eliminar ciudades que ya están asignadas a la ruta
         del cities[home]
         for i in route:
             del cities[i]
-        # Sort cities
+        # Ordenar ciudades
         sorted = list(cities.values())
         sorted.sort()
-        # Add the city with the shortest distance
+        # Añadir la ciudad con la distancia más corta
         from_index = sorted[0].index
         route.append(from_index)
-    # Create a new state and update the distance
+    # Crear un nuevo estado y actualizar la distancia
     state = State(route)
     state.update_distance(matrix, home)
-    # Return a state
+    # Retornar estado
     return state
 
 
-# Get a random solution by using weights
-def get_random_solution_with_weights(matrix: [], home: int):
-    # Variables
-    route = []
-    from_index = home
-    length = len(matrix) - 1
-    # Loop until route is complete
-    while len(route) < length:
-        # Get a matrix row
-        row = matrix[from_index]
-        # Create a list with cities
-        cities = {}
-        for i in range(len(row)):
-            cities[i] = City(i, row[i])
-        # Remove cities that already is assigned to the route
-        del cities[home]
-        for i in route:
-            del cities[i]
-        # Get the total weight
-        total_weight = 0
-        for key, city in cities.items():
-            total_weight += city.distance
-        # Add weights
-        weights = []
-        for key, city in cities.items():
-            weights.append(total_weight / city.distance)
-        # Add a city at random
-        from_index = random.choices(list(cities.keys()), weights=weights)[0]
-        route.append(from_index)
-    # Create a new state and update the distance
-    state = State(route)
-    state.update_distance(matrix, home)
-    # Return a state
-    return state
-
-
-# Mutate a solution
+# Mutar una solución
 def mutate(matrix: [], home: int, state: State, mutation_rate: float = 0.01):
-    # Create a copy of the state
+    # Creando una copia del estado
     mutated_state = state.deepcopy()
-    # Loop all the states in a route
+    # Recorre todos los estados en una ruta
     for i in range(len(mutated_state.route)):
-        # Check if we should do a mutation
+        # CComprueba si deberíamos hacer una mutación
         if (random.random() < mutation_rate):
-            # Swap two cities
+            # Intercambiar 2 ciudades
             j = int(random.random() * len(state.route))
             city_1 = mutated_state.route[i]
             city_2 = mutated_state.route[j]
             mutated_state.route[i] = city_2
             mutated_state.route[j] = city_1
-    # Update the distance
+    # Actualizar la distancia
     mutated_state.update_distance(matrix, home)
-    # Return a mutated state
+    # Devolver estado mutado
     return mutated_state
 
 
-# Hill climbing algorithm
+# Algoritmo Hill climbing
 def hill_climbing(matrix: [], home: int, initial_state: State, max_iterations: int, mutation_rate: float = 0.01):
-    # Keep track of the best state
+    # Mantenga un registro del mejor estado
     best_state = initial_state
-    # An iterator can be used to give the algorithm more time to find a solution
+    #Se puede usar un iterador para darle al algoritmo más tiempo para encontrar una solucion
     iterator = 0
-    # Create an infinite loop
+    # Creando un bucle infinitoooo
     while True:
-        # Mutate the best state
+        # Muta el mejor estado
         neighbor = mutate(matrix, home, best_state, mutation_rate)
-        # Check if the distance is less than in the best state
+        # Comprueba si la distancia es menor que en el mejor estado
         if (neighbor.distance >= best_state.distance):
             iterator += 1
             if (iterator > max_iterations):
                 break
         if (neighbor.distance < best_state.distance):
             best_state = neighbor
-    # Return the best state
+    # Deuelve el mejor estado
     return best_state
 
 
-# The main entry point for this module
 def main():
-    # Cities to travel
-    cities = ['New York', 'Los Angeles', 'Chicago', 'Minneapolis', 'Denver', 'Dallas', 'Seattle', 'Boston',
-              'San Francisco', 'St. Louis', 'Houston', 'Phoenix', 'Salt Lake City']
+    # Ciudades a viajar
+    cities = ['Magdalena', 'San_Isidro', 'Cercado_de_Lima', 'Breña', 'Miraflores','San Miguel']
     city_indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-    # Index of start location
+    # Inicio
     home = 2  # Chicago
-    # Max iterations
+    # Maxima iteraciones
     max_iterations = 1000
-    # Distances in miles between cities, same indexes (i, j) as in the cities array
     matrix= [
         [0, 2451, 713, 1018, 1631],
         [2451, 0, 1745, 1524, 831],
@@ -219,7 +133,7 @@ def main():
         [178, 245, 235, 322, 0]
     ]
 
-    # Run hill climbing to find a better solution
+    #Hill Climbing para encontrar una mejor solución
     state = get_best_solution_by_distance(matrix, home)
     state = hill_climbing(matrix, home, state, 1000, 0.1)
     print('-- Hill climbing solution --')
@@ -227,8 +141,6 @@ def main():
     for i in range(0, len(state.route)):
         print(' -> ' + cities[state.route[i]], end='')
     print(' -> ' + cities[home], end='')
-    print('\n\nTotal distance: {0} miles'.format(state.distance))
+    print('\n\nTotal distance: {0} km'.format(state.distance))
 
-
-# Tell python to run main method
-if __name__ == "__main__": main()
+main()
