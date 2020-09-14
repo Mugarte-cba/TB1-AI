@@ -1,5 +1,5 @@
-# Ugamev3.0
-## UBONGO :sunglasses:
+# Hill Climbing
+## TA1 :sunglasses:
 ### Integrantes:
 * Juep Sifuentes, Alex
 * Pachari Vega, Victor
